@@ -55,7 +55,7 @@ namespace AbmApi.Controllers
         {
             _logger.LogInformation("Obteniendo producto por ID {ProductoId}", id);
 
-            var result = _mediator.Send(new GetProductoByIdQuery(id));
+            var result = await _mediator.Send(new GetProductoByIdQuery(id));
 
             if (result is null)
             {
