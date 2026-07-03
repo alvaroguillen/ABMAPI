@@ -1,0 +1,42 @@
+## Carpetas de build
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Archivos de VS específicos que mencionaste
+*.slnx.v18/
+*.metadata.v10.bin
+*.projects.v10.bin
+*.strings.v10.bin
+DocumentLayout.json
+DocumentLayout.backup.json
+
+## Resultados de build
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ll]og/
+[Ll]ogs/
+
+## NuGet
+*.nuget.props
+*.nuget.targets
+*.nuget.g.props
+*.nuget.g.targets
+packages/
+*.nupkg
+
+## Archivos de configuración local (opcional, si manejás secretos)
+appsettings.Development.json
+appsettings.Local.json
+
+## Rider / otros IDEs (por si acaso)
+.idea/
+*.DotSettings.user
