@@ -3,8 +3,13 @@ using AbmApi.Infraestructure.Context;
 using AbmApi.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((ctx,services,lc) => 
+lc.ReadFrom.Configuration(ctx.Configuration)
+.ReadFrom.Services(services)
+.Enrich.FromLogContext());
 
 var envDirecta = Environment.GetEnvironmentVariable("ApplicationName");
 
@@ -28,6 +33,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 

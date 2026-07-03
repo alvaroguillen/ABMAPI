@@ -9,17 +9,22 @@ namespace AbmApi.Application.Query
     public class GetProductoByIdHandler: IRequestHandler<GetProductoByIdQuery, ProductoResponse?>
     {
         private readonly PostgresDbContext _postgresDbContext;
-
-        public GetProductoByIdHandler(PostgresDbContext postgresDbContext)
+        private readonly ILogger<GetProductoByIdHandler> _logger;
+        public GetProductoByIdHandler(PostgresDbContext postgresDbContext, ILogger<GetProductoByIdHandler> logger)
         {
             _postgresDbContext = postgresDbContext;
+            _logger = logger;
         }
 
         public async Task<ProductoResponse?> Handle(GetProductoByIdQuery request, CancellationToken cancellationToken)
         {
+            _logger.LogDebug("Buscando producto por ID: {ProductoId}", request.Id);
+
             var entity = await _postgresDbContext.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Id ==  request.Id, cancellationToken);
 
-            if (entity is null) { return null; }
+            if (entity is null) { _logger.LogWarning("Producto con ID {ProductoId} no encontrado", request.Id); return null; }
+
+            _logger.LogInformation("Producto con ID {ProductoId} encontrado - Código: {Codigo}", request.Id, entity.Codigo);
 
             return new ProductoResponse
                        (

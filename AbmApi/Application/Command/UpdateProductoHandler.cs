@@ -8,17 +8,23 @@ namespace AbmApi.Application.Command
     public class UpdateProductoHandler : IRequestHandler<UpdateProductoCommand, ProductoResponse?>
     {
         private readonly PostgresDbContext _postgresDbContext;
-
-        public UpdateProductoHandler(PostgresDbContext postgresDbContext)
+        private readonly ILogger<UpdateProductoHandler> _logger;
+        public UpdateProductoHandler(PostgresDbContext postgresDbContext, ILogger<UpdateProductoHandler> logger)
         {
             _postgresDbContext = postgresDbContext;
+            _logger = logger;
         }
 
         public async Task<ProductoResponse?> Handle(UpdateProductoCommand request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Actualizando producto - ID: {ProductoId}, Código: {Codigo}",request.Id, request.Request.Codigo);
+
             var entity = await _postgresDbContext.Productos.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
-            if(entity == null) return null;
+            if(entity == null) {
+                _logger.LogWarning("Producto a actualizar no encontrado - ID: {ProductoId}", request.Id);
+                return null;
+            }
 
             entity.Codigo = request.Request.Codigo;
             entity.Nombre = request.Request.Nombre;
@@ -30,6 +36,8 @@ namespace AbmApi.Application.Command
             entity.FechaActualizacion = DateTime.Now;
 
             await _postgresDbContext.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("Producto actualizado - ID: {ProductoId}, Código: {Codigo}", request.Id, request.Request.Codigo);
 
             return new ProductoResponse(
                     entity.Id,
